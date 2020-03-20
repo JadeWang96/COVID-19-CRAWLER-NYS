@@ -50,21 +50,7 @@ class Crawler:
 
             county_information = soup.find_all("td")
             if county_information:
-                county_name = []
-                county_number = []
-                flag = True
-                for county in county_information:
-                    if flag:
-                        county_name.append(county.string.extract())
-                        flag = False
-                    else:
-                        county_number.append(county.string.extract())
-                        flag = True
-
-                t = PrettyTable(['County', 'Positive Cases'])
-                for i, j in zip(county_name, county_number):
-                    t.add_row([i, j])
-                print(t)
+                self.county_parser(county_information=county_information)
 
             if not update_time or not county_information:
                 continue
@@ -77,16 +63,22 @@ class Crawler:
         print(update_time.string.extract())
         print()
 
-    # def state_parser(self, state_information, soup):
-    # county_name = soup.find_all('td', attrs={'data-th': 'County'})
-    # count_number = soup.find_all('td', attrs={'data-th': 'Positive Cases'})
-    # county_name = state_information.find
-    # count_number = soup.find_all('td', attrs={'data-th': 'Positive Cases'})
-    # print("Display table content:\n")
-    # print(county_name)
-    # print()
-    # print(count_number)
-    # print()
+    def county_parser(self, county_information):
+        county_name = []
+        county_number = []
+        flag = True
+        for county in county_information:
+            if flag:
+                county_name.append(county.string.extract())
+                flag = False
+            else:
+                county_number.append(county.string.extract())
+                flag = True
+
+        t = PrettyTable(['County', 'Positive Cases'])
+        for i, j in zip(county_name, county_number):
+            t.add_row([i, j])
+        print(t)
 
 
 if __name__ == '__main__':
