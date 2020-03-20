@@ -14,8 +14,9 @@ python3 main.py & python3 nameMap.py
 ```
 
 # Sample
+Result sample
+```
 Last Update: March 20, 2020 | 3:25PM
-
 +--------------------------------+----------------+
 |             County             | Positive Cases |
 +--------------------------------+----------------+
@@ -64,7 +65,7 @@ Last Update: March 20, 2020 | 3:25PM
 | Total Number of Positive Cases |     7,102      |
 +--------------------------------+----------------+
 2020-03-20 19:24:50,500 - Successfully crawled.
-
+```
 ## To be improved
 Currently, it only print the data in the console, I will add the database later.
 
