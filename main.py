@@ -78,7 +78,8 @@ class Crawler:
                 county_name.append(county.string.extract())
                 flag = False
             else:
-                county_number.append(county.string.extract())
+                str_num = int(county.string.extract().replace(',', ''))
+                county_number.append(str_num)
                 flag = True
 
         if self.csv_name:
