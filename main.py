@@ -15,21 +15,24 @@ import random
 import logging
 import requests
 from prettytable import PrettyTable
+import csv
+import sys
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
 class Crawler:
-    def __init__(self):
+    def __init__(self, csv_name=None):
         self.session = requests.session()
         # self.db = DB()
         self.crawl_timestamp = int()
+        self.csv_name = csv_name
 
     def run(self):
         while True:
             self.crawler()
-            time.sleep(600)
+            time.sleep(6000)  # It's unnecessary to be a small interval
 
     def crawler(self):
         while True:
@@ -60,6 +63,9 @@ class Crawler:
         logger.info('Successfully crawled.')
 
     def update_time_parser(self, update_time):
+        print(
+            "\nNew York State Government Official Website, Department of Health \n"
+            "https://coronavirus.health.ny.gov/county-county-breakdown-positive-cases")
         print(update_time.string.extract())
         print()
 
@@ -75,12 +81,32 @@ class Crawler:
                 county_number.append(county.string.extract())
                 flag = True
 
+        if self.csv_name:
+            self.csv_output(county_name=county_name, county_number=county_number, csv_name=self.csv_name)
+
+        self.console_output(county_name=county_name, county_number=county_number)
+
+    def console_output(self, county_name, county_number):
         t = PrettyTable(['County', 'Positive Cases'])
         for i, j in zip(county_name, county_number):
             t.add_row([i, j])
         print(t)
 
+    def csv_output(self, county_name, county_number, csv_name):
+        with open(csv_name, 'w', newline='') as csvfile:
+            fieldnames = ['County', 'Positive Cases']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for i, j in zip(county_name, county_number):
+                writer.writerow({'County': i, 'Positive Cases': j})
+            csvfile.close()
+        print("Successfully output as ", csv_name)
+
 
 if __name__ == '__main__':
-    crawler = Crawler()
+    if len(sys.argv) > 1:
+        crawler = Crawler(sys.argv[1])
+    else:
+        crawler = Crawler()
+
     crawler.run()
