@@ -8,7 +8,7 @@
 ## Output
 - Console print
 - CSV file
-- MongoDB (TBC)
+- MongoDB
 
 ## Dependencies
 ```shell script
@@ -20,17 +20,32 @@ pip3 install requests
 ```
 
 ## Run
-- Console output
+- For all output
 ```shell script
-python3 main.py & python3 nameMap.py
+chmod u+r+x init.sh
+./init.sh
 ```
-- CSV file output
+- For csv output
 ```shell script
-python3 main.py output.csv & python3 nameMap.py
+chmod u+r+x csv.sh
+./csv.sh
 ```
+
 ## Database
 MongoDB host on [Docker](https://hub.docker.com/_/mongo)
-## Result Sample
+```dockerfile
+docker pull mongo
+docker run -d -p 27017:27017 --name mongo_covid mongo
+docker inspect mongo_covid
+```
+Database setup and connection
+```python
+client = pymongo.MongoClient("mongodb://localhost:27017/")
+db = client["new_york_state"]
+counties = db["counties"]
+```
+
+## Result Sample - Console
 ```
 New York State Government Official Website, Department of Health 
 https://coronavirus.health.ny.gov/county-county-breakdown-positive-cases
@@ -85,9 +100,6 @@ Last Update: March 20, 2020 | 3:25PM
 +--------------------------------+----------------+
 2020-03-20 19:24:50,500 - Successfully crawled.
 ```
-## To be improved
-Currently, it only print the data in the console and write in cvs file, I will add the database API later.
-
 ## Reference and Contribution
 This project is based on [DXY-COVID-19-Crawler Project](https://github.com/BlankerL/DXY-COVID-19-Crawler).
 All credits to [Jiabao Lin](https://github.com/BlankerL).

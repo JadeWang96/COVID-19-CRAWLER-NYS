@@ -6,10 +6,7 @@
 '''
 from bs4 import BeautifulSoup
 from db import DB
-# from userAgent import user_agent_list
-# from nameMap import state_name_map, new_york_county_map
-import re
-import json
+from userAgent import user_agent_list
 import time
 import random
 import logging
@@ -18,8 +15,6 @@ from prettytable import PrettyTable
 import csv
 import sys
 import os
-from pprint import pprint
-from pymongo import MongoClient
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -28,8 +23,7 @@ logger = logging.getLogger(__name__)
 class Crawler:
     def __init__(self, csv_name=None):
         self.session = requests.session()
-        # mongo = MongoClient("mongodb://%s:%s/" % ('172.17.0.2', 27017))
-        # self.db = mongo['new_york_state']
+        self.db = DB(db_name='new_york_state').db
         self.crawl_timestamp = int()
         self.csv_name = csv_name
 
@@ -40,11 +34,11 @@ class Crawler:
 
     def crawler(self):
         while True:
-            # self.session.headers.update(
-            #     {
-            #         'user-agent': random.choice(user_agent_list)
-            #     }
-            # )
+            self.session.headers.update(
+                {
+                    'user-agent': random.choice(user_agent_list)
+                }
+            )
             self.crawl_timestamp = int(time.time() * 1000)
             try:
                 r = self.session.get(url='https://coronavirus.health.ny.gov/county-county-breakdown-positive-cases')
@@ -93,6 +87,21 @@ class Crawler:
             self.csv_output(county_name=county_name, county_number=county_number)
 
         self.console_output(county_name=county_name, county_number=county_number_str)
+        self.db_output(county_name=county_name, county_number=county_number)
+
+    def db_output(self, county_name, county_number):
+        counties = self.db["counties"]
+        county_list = []
+        for i, j in zip(county_name, county_number):
+            county_list.append({'County': i, 'Number': j})
+        for i in county_list:
+            temp = counties.find_one(i)
+            if temp:
+                continue
+            else:
+                counties.insert_one(i)
+        for i in counties.find():
+            print(i)
 
     def console_output(self, county_name, county_number):
         t = PrettyTable(['County', 'Positive Cases'])
@@ -102,7 +111,7 @@ class Crawler:
 
     def csv_output(self, county_name, county_number):
         # Create a new folder to store the csv file
-        new_path = r'./Output'
+        new_path = r'../Output'
         if not os.path.exists(new_path):
             os.makedirs(new_path)
         csv_path = os.path.join(new_path, self.csv_name)
