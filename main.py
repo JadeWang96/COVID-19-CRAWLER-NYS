@@ -5,9 +5,9 @@
 @Reference: DXY-2019-nCov-Crawler Project by Jiabao Lin
 '''
 from bs4 import BeautifulSoup
-# from db import DB
+from db import DB
 # from userAgent import user_agent_list
-from nameMap import state_name_map, new_york_county_map
+# from nameMap import state_name_map, new_york_county_map
 import re
 import json
 import time
@@ -18,6 +18,8 @@ from prettytable import PrettyTable
 import csv
 import sys
 import os
+from pprint import pprint
+from pymongo import MongoClient
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -26,7 +28,8 @@ logger = logging.getLogger(__name__)
 class Crawler:
     def __init__(self, csv_name=None):
         self.session = requests.session()
-        # self.db = DB()
+        # mongo = MongoClient("mongodb://%s:%s/" % ('172.17.0.2', 27017))
+        # self.db = mongo['new_york_state']
         self.crawl_timestamp = int()
         self.csv_name = csv_name
 
@@ -60,14 +63,14 @@ class Crawler:
                 continue
 
             break
-
         logger.info('Successfully crawled.')
 
     def update_time_parser(self, update_time):
         print(
             "\nNew York State Government Official Website, Department of Health \n"
             "https://coronavirus.health.ny.gov/county-county-breakdown-positive-cases")
-        print(update_time.string.extract())
+        time_str = update_time.string.extract()
+        print(time_str)
         print()
 
     def county_parser(self, county_information):
@@ -98,10 +101,13 @@ class Crawler:
         print(t)
 
     def csv_output(self, county_name, county_number):
+        # Create a new folder to store the csv file
         new_path = r'./Output'
         if not os.path.exists(new_path):
             os.makedirs(new_path)
         csv_path = os.path.join(new_path, self.csv_name)
+
+        # Write into a csv file
         with open(csv_path, 'w', newline='') as csvfile:
             fieldnames = ['County', 'Positive Cases']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)

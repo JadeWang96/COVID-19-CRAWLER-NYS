@@ -1,14 +1,16 @@
 # COVID-19-CRAWLER-NYS
 
-Web Crawler for the update of COVID-19 data from [New York State Government](https://coronavirus.health.ny.gov/county-county-breakdown-positive-cases)\
-The update of government official website may be behind the media/news, but it will be up-to-date by the end of the day. 
+:warning: Web Crawler for the update of COVID-19 data from [New York State Government](https://coronavirus.health.ny.gov/county-county-breakdown-positive-cases)
+- The update of government official website may be behind the media/news, but it will be up-to-date by the end of the day.
+- For the real-time update, I would recommend [1point3acres](https://coronavirus.1point3acres.com/?from=timeline&isappinstalled=0)
+- If you are a resident at New York State, sign up for coronavirus updates [here](https://now.ny.gov/page/s/coronavirus-updates)
 
-# Output
+## Output
 - Console print
 - CSV file
 - MongoDB (TBC)
 
-# Dependencies
+## Dependencies
 ```shell script
 pip3 install BeautifulSoup
 pip3 install PrettyTable
@@ -17,7 +19,7 @@ pip3 install pymongo
 pip3 install requests
 ```
 
-# Run
+## Run
 - Console output
 ```shell script
 python3 main.py & python3 nameMap.py
@@ -26,8 +28,9 @@ python3 main.py & python3 nameMap.py
 ```shell script
 python3 main.py output.csv & python3 nameMap.py
 ```
-
-# Result Sample
+## Database
+MongoDB host on [Docker](https://hub.docker.com/_/mongo)
+## Result Sample
 ```
 New York State Government Official Website, Department of Health 
 https://coronavirus.health.ny.gov/county-county-breakdown-positive-cases
