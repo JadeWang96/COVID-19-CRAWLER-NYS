@@ -28,7 +28,7 @@ chmod u+r+x init.sh
 - For csv output
 ```shell script
 chmod u+r+x csv.sh
-./csv.sh
+./csv.sh <csv file name.csv>
 ```
 
 ## Database
