@@ -17,6 +17,7 @@ import requests
 from prettytable import PrettyTable
 import csv
 import sys
+import os
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -72,20 +73,23 @@ class Crawler:
     def county_parser(self, county_information):
         county_name = []
         county_number = []
+        county_number_str = []
         flag = True
         for county in county_information:
             if flag:
                 county_name.append(county.string.extract())
                 flag = False
             else:
-                str_num = int(county.string.extract().replace(',', ''))
+                county_str = county.string.extract()
+                county_number_str.append(county_str)  # Easier to read with ,
+                str_num = int(county_str.replace(',', ''))
                 county_number.append(str_num)
                 flag = True
 
         if self.csv_name:
-            self.csv_output(county_name=county_name, county_number=county_number, csv_name=self.csv_name)
+            self.csv_output(county_name=county_name, county_number=county_number)
 
-        self.console_output(county_name=county_name, county_number=county_number)
+        self.console_output(county_name=county_name, county_number=county_number_str)
 
     def console_output(self, county_name, county_number):
         t = PrettyTable(['County', 'Positive Cases'])
@@ -93,15 +97,19 @@ class Crawler:
             t.add_row([i, j])
         print(t)
 
-    def csv_output(self, county_name, county_number, csv_name):
-        with open(csv_name, 'w', newline='') as csvfile:
+    def csv_output(self, county_name, county_number):
+        new_path = r'./Output'
+        if not os.path.exists(new_path):
+            os.makedirs(new_path)
+        csv_path = os.path.join(new_path, self.csv_name)
+        with open(csv_path, 'w', newline='') as csvfile:
             fieldnames = ['County', 'Positive Cases']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
             for i, j in zip(county_name, county_number):
                 writer.writerow({'County': i, 'Positive Cases': j})
             csvfile.close()
-        print("Successfully output as ", csv_name)
+        print("Successfully output as ", self.csv_name)
 
 
 if __name__ == '__main__':

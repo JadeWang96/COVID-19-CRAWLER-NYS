@@ -12,6 +12,9 @@ The update of government official website may be behind the media/news, but it w
 ```shell script
 pip3 install BeautifulSoup
 pip3 install PrettyTable
+pip3 install lxml
+pip3 install pymongo
+pip3 install requests
 ```
 
 # Run
@@ -26,7 +29,10 @@ python3 main.py output.csv & python3 nameMap.py
 
 # Result Sample
 ```
+New York State Government Official Website, Department of Health 
+https://coronavirus.health.ny.gov/county-county-breakdown-positive-cases
 Last Update: March 20, 2020 | 3:25PM
+
 +--------------------------------+----------------+
 |             County             | Positive Cases |
 +--------------------------------+----------------+
